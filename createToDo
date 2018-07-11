@@ -1,34 +1,75 @@
-class App extends React.Component {
-      constructor(){
-        super();  
-        this.state={checked: 0}
-      }
-      
-      onChange(i){
-         this.setState({
-             checked: i
-         });
-      }
-      
-        render() {
-    return(
-        <div>
-            {
-                [1,2,3,4].map((option,i)=>{
-                    return <label key={i}>
-                                <input 
-                                    type="radio" 
-                                    checked={this.state.checked == i ? true : false} 
-                                    key={i+100}
-                                    onChange={this.onChange.bind(this,i)} 
-                                    value={i} />
-                                {option}
-                            </label>
-                })
-            }
-        </div>
-    );
-      }
-    }
+import React from "react";
+import ReactDOM from "react-dom";
+import "./styles.css";
 
-ReactDOM.render(<App />, document.getElementById('container'));
+class TodoList extends React.Component{
+  
+  constructor(props) {
+    super(props);
+    this.state = {thing: "",
+      items: [],
+      isChecked: false,
+      radio: 0};
+    this.addTask = this.addTask.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.handleChecked = this.handleChecked.bind(this);
+  }
+  onChange(event){
+    this.setState({radio: i})
+  }
+  addTask(event){
+    this.setState({ thing: event.target.value });
+  };
+
+  onSubmit(event){
+    event.preventDefault();
+    this.setState({
+      thing: '',
+      items: [...this.state.items, this.state.thing],
+      radio: [...this.state.items, this.state.thing]
+    });
+  };
+
+  handleChecked(event){
+    this.setState({isChecked: !this.state.isChecked});
+    if (this.state.isChecked === true){
+        this.state.items.splice(event, this.state.items[event]);
+        this.setState({items: this.state.items})
+    }
+  }
+
+  render() {
+    console.log(this.state.checked);
+    return (
+      <div>
+      <h1>To Do List</h1>
+      <button onClick ={this.handleChecked}>Delete</button>
+          <form onSubmit={this.onSubmit}>
+            <input value = {this.state.thing} onChange = {this.addTask}
+              placeholder="Enter Task" radio={this.state.radio}>
+            </input>
+            <button type="submit">Add Task</button>
+           
+          </form>
+          
+          <ol> 
+          {this.state.items.map( 
+            (item) => 
+               <li>
+                {item}
+                <input onChange={this.handleChecked} type="radio" checked={this.state.isChecked} ></input>
+              </li>
+            )
+          }
+          </ol>
+        <style>{'body { background-color: purple; }'}</style>
+        
+      </div>
+    );
+  }
+}
+
+
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<TodoList/>, rootElement);
